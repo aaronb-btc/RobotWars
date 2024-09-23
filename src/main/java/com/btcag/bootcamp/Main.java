@@ -13,8 +13,8 @@ public class Main {
         String username = scanner.next();
         System.out.println("Welcome, " + username  + "!");
 
-        long botX = 14;
-        long botY = 9;
+        long botX = 7;
+        long botY = 4;
         long x = 0;
         long y = 0;
         long temp;
@@ -27,19 +27,18 @@ public class Main {
         while (y < 10) {
             x = 0;
             while (x < 15) {
-                playfield += "| ";
                 botHere = false;
                 temp = botX;
                 while (temp == x) {
                     while (botY == y) {
-                        playfield += "O ";
+                        playfield += "| O ";
                         botHere = true;
                         botY--;
                     }
                     temp--;
                 }
                 while (!botHere) {
-                    playfield += "  ";
+                    playfield += "|   ";
                     botHere = true;
                 }
                 x++;
