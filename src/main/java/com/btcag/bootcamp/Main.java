@@ -16,37 +16,103 @@ public class Main {
         long botX = 7;
         long botY = 4;
         long x = 0;
-        long y = 0;
+        long y;
         long temp;
         boolean botHere;
         String seperator = "";
-        while (x++ < 15 * 4 + 1) {
-            seperator += "-";
+        while (x++ < 15) {
+            seperator += "|---";
         }
-        String playfield = seperator + "\n";
-        while (y < 10) {
-            x = 0;
-            while (x < 15) {
-                botHere = false;
-                temp = botX;
-                while (temp == x) {
-                    while (botY == y) {
-                        playfield += "| O ";
-                        botHere = true;
-                        botY--;
-                    }
-                    temp--;
-                }
-                while (!botHere) {
-                    playfield += "|   ";
-                    botHere = true;
-                }
-                x++;
-            }
-            playfield += "|\n" + seperator + "\n";
-            y++;
-        }
-        System.out.print(playfield);
-    }
+        seperator += '|';
+        String playfield;
 
+        while (true) {
+            playfield = seperator + "\n";
+            y = 0;
+            while (y < 10) {
+                x = 0;
+                while (x < 15) {
+                    botHere = false;
+                    temp = botX;
+                    while (temp == x) {
+                        while (botY == y) {
+                            playfield += "| O ";
+                            botHere = true;
+                            botY--;
+                            temp = -100;
+                        }
+                        temp--;
+                    }
+                    while (temp < -99) {
+                        botY++;
+                        temp = 0;
+                    }
+                    while (!botHere) {
+                        playfield += "|   ";
+                        botHere = true;
+                    }
+                    x++;
+                }
+                playfield += "| " + (y + 1) + "\n" + seperator + "\n";
+                y++;
+            }
+            playfield += " ";
+            x = 0;
+            while (x++ < 15) {
+                playfield += x;
+                temp = ("" + x).length();
+                while (4 - temp > 0) {
+                    playfield += ' ';
+                    temp++;
+                }
+            }
+            System.out.println(playfield);
+            System.out.println("Where do you want to move to?\nw: ↑   a: ←   s: ↓   d: →");
+            char input = scanner.next().charAt(0);
+            while (input == 'w') {
+                input = ' ';
+                y = botY - 1;
+                while (y >= 0) {
+                    while (y < 10) {
+                        botY = y;
+                        y = 10;
+                    }
+                    y = -1;
+                }
+            }
+            while (input == 'a') {
+                input = ' ';
+                x = botX - 1;
+                while (x >= 0) {
+                    while (x < 15) {
+                        botX = x;
+                        x = 15;
+                    }
+                    x = -1;
+                }
+            }
+            while (input == 's') {
+                input = ' ';
+                y = botY + 1;
+                while (y >= 0) {
+                    while (y < 10) {
+                        botY = y;
+                        y = 10;
+                    }
+                    y = -1;
+                }
+            }
+            while (input == 'd') {
+                input = ' ';
+                x = botX + 1;
+                while (x >= 0) {
+                    while (x < 15) {
+                        botX = x;
+                        x = 15;
+                    }
+                    x = -1;
+                }
+            }
+        }
+    }
 }
