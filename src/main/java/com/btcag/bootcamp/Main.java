@@ -13,11 +13,8 @@ public class Main {
         String username = scanner.next();
         System.out.println("Welcome, " + username  + "!");
 
-        long botX = 0;
-        long botY = 0;
         long x = 0;
         long y = 0;
-        boolean botHere;
         String seperator = "";
         while (x++ < 15 * 4 + 1) {
             seperator += "-";
