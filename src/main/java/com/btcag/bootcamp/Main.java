@@ -16,16 +16,35 @@ public class Main {
         long[] botPos = {1, 1};
         long[] size = {15, 10};
         long[][] enemyPositions = {{size[0] - 2, size[1] - 2}};
+        int gameWon = 0;
         String playfield;
 
-        while (true) {
+        while (gameWon == 0) {
             playfield = generatePlayfield(size, botPos, enemyPositions);
             System.out.println(playfield);
 
             do {
                 System.out.println("\nWhere do you want to move to?\nw: ↑   a: ←   s: ↓   d: →");
             } while (!movePlayer(scanner.next().charAt(0), size, botPos));
+            gameWon = gameWon(botPos, enemyPositions);
         }
+        System.out.println(generatePlayfield(size, botPos, enemyPositions));
+        if (gameWon == 1) {
+            System.out.println(username + " won!");
+        } else if (gameWon == 2) {
+            System.out.println(username + " was slain by the enemies.");
+        }
+    }
+
+    public static int gameWon(long[] botPos, long[][] enemyPositions) {
+        for (long[] enemyPos: enemyPositions) {
+            if (botPos[0] == enemyPos[0] && botPos[1] == enemyPos[1]) {
+                return 1; // player won
+            } else {
+                return 0; // nobody won
+            } // enemies cant do anything (including winning by accident) yet
+        }
+        return 0;
     }
 
     public static boolean movePlayer(char directionInput, long[] playfieldSize, long[] botPos) {
