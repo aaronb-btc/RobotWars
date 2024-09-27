@@ -1,7 +1,5 @@
 package com.btcag.bootcamp;
 
-import com.sun.source.tree.BindingPatternTree;
-
 import java.util.Scanner;
 
 public class Main {
