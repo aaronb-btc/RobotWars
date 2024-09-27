@@ -15,7 +15,7 @@ public class Main {
 
         long[] botPos = {1, 1};
         long[] size = {15, 10};
-        long[][] enemyPositions = {{size[0] - 2, size[1] - 2}};
+        long[][] enemyPositions = {{size[0] - 2, size[1] - 2}}; // May have to rewrite this so more bots are possible later
         int gameWon = 0;
         String playfield;
 
@@ -25,13 +25,14 @@ public class Main {
 
             do {
                 System.out.println("\nWhere do you want to move to?\nw: ↑   a: ←   s: ↓   d: →");
-            } while (!movePlayer(scanner.next().charAt(0), size, botPos));
+            } while (!movePlayer(scanner.next().charAt(0), size, botPos)); // Repeats do codeblock if movement was invalid
             gameWon = gameWon(botPos, enemyPositions);
         }
         System.out.println(generatePlayfield(size, botPos, enemyPositions));
-        if (gameWon == 1) {
+        // switch would be better mor more than 2 endings
+        if (gameWon == 1) { // Player won
             System.out.println(username + " won!");
-        } else if (gameWon == 2) {
+        } else if (gameWon == 2) { // Enemies won
             System.out.println(username + " was slain by the enemies.");
         }
     }
@@ -48,7 +49,7 @@ public class Main {
     }
 
     public static boolean movePlayer(char directionInput, long[] playfieldSize, long[] botPos) {
-        long[] relPos = new long[2];
+        long[] relPos = new long[2]; // new pos relative to current botPos
         switch (directionInput) {
             case 'w':
                 relPos[1] = -1;
@@ -63,17 +64,17 @@ public class Main {
                 relPos[0] = 1;
                 break;
         }
-        if (relPos[0] == 0 && relPos[1] == 0) {
+        if (relPos[0] == 0 && relPos[1] == 0) { // no move is also invalid for now
             return false;
         }
         for (int i = 0; i < relPos.length; i++) {
-            if (botPos[i] + relPos[i] < 0 || botPos[i] + relPos[i] >= playfieldSize[i]) {
-                return false;
+            if (botPos[i] + relPos[i] < 0 || botPos[i] + relPos[i] >= playfieldSize[i]) { // new pos outside playfield
+                return false; // report move as invalid
             }
         }
-        botPos[0] += relPos[0];
+        botPos[0] += relPos[0]; // Update botPos
         botPos[1] += relPos[1];
-        return true;
+        return true; // report move as valid
     }
 
     public static String generatePlayfield(long[] size, long[] botPos, long[][] enemyPositions) {
@@ -87,12 +88,16 @@ public class Main {
         boolean enemyHere;
         for (long y = 0; y < size[1]; y++) {
             for (long x = 0; x < size[0]; x++) {
+
+                // looks for enemies in this spot
                 enemyHere = false;
                 for (long[] enemyPos: enemyPositions) {
                     if (enemyPos[0] == x && enemyPos[1] == y) {
                         enemyHere = true;
                     }
                 }
+
+                // Decides what the current (x | y) field looks like based on coordinates
                 if (botPos[0] == x && botPos[1] == y) {
                     playfield += "| O ";
                 } else if (enemyHere) {
@@ -104,6 +109,8 @@ public class Main {
             playfield += "| " + (y + 1) + "\n" + seperator + "\n";
         }
         playfield += ' ';
+
+        // This adds the column numbers at the bottom
         for (long x = 0; x < size[0]; x++) {
             playfield += x;
             for (long i =  4 - ("" + x).length(); i > 0; i--) {
