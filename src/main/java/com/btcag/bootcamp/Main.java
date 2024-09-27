@@ -13,20 +13,19 @@ public class Main {
         String username = scanner.next();
         System.out.println("Welcome, " + username  + "!");
 
-        long[] botPos = {7, 6};
+        long[] botPos = {1, 1};
         long[] size = {15, 10};
-        long temp;
+        long[][] enemyPositions = {{size[0] - 2, size[1] - 2}};
         String playfield;
 
         while (true) {
-            playfield = generatePlayfield(size, botPos);
+            playfield = generatePlayfield(size, botPos, enemyPositions);
             System.out.println(playfield);
 
             do {
                 System.out.println("\nWhere do you want to move to?\nw: ↑   a: ←   s: ↓   d: →");
             } while (!movePlayer(scanner.next().charAt(0), size, botPos));
         }
-
     }
 
     public static boolean movePlayer(char directionInput, long[] playfieldSize, long[] botPos) {
@@ -58,7 +57,7 @@ public class Main {
         return true;
     }
 
-    public static String generatePlayfield(long[] size, long[] botPos) {
+    public static String generatePlayfield(long[] size, long[] botPos, long[][] enemyPositions) {
         String seperator = "";
         for (long i = 0; i < size[0]; i++) {
             seperator += "|---";
@@ -66,10 +65,19 @@ public class Main {
         seperator += '|';
         String playfield;
         playfield = seperator + "\n";
+        boolean enemyHere;
         for (long y = 0; y < size[1]; y++) {
             for (long x = 0; x < size[0]; x++) {
+                enemyHere = false;
+                for (long[] enemyPos: enemyPositions) {
+                    if (enemyPos[0] == x && enemyPos[1] == y) {
+                        enemyHere = true;
+                    }
+                }
                 if (botPos[0] == x && botPos[1] == y) {
                     playfield += "| O ";
+                } else if (enemyHere) {
+                    playfield += "| X ";
                 } else {
                     playfield += "|   ";
                 }
