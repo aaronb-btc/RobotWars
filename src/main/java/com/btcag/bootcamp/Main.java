@@ -1,5 +1,7 @@
 package com.btcag.bootcamp;
 
+import com.sun.source.tree.BindingPatternTree;
+
 import java.util.Scanner;
 
 public class Main {
@@ -13,40 +15,76 @@ public class Main {
         String username = scanner.next();
         System.out.println("Welcome, " + username  + "!");
 
-        long botX = 7;
-        long botY = 4;
-        long x = 0;
-        long y = 0;
+        long[] botPos = {7, 6};
+        long[] size = {15, 10};
         long temp;
-        boolean botHere;
-        String seperator = "";
-        while (x++ < 15 * 4 + 1) {
-            seperator += "-";
+        String playfield;
+
+        while (true) {
+            playfield = generatePlayfield(size, botPos);
+            System.out.println(playfield);
+
+            do {
+                System.out.println("\nWhere do you want to move to?\nw: ↑   a: ←   s: ↓   d: →");
+            } while (!movePlayer(scanner.next().charAt(0), size, botPos));
         }
-        String playfield = seperator + "\n";
-        while (y < 10) {
-            x = 0;
-            while (x < 15) {
-                botHere = false;
-                temp = botX;
-                while (temp == x) {
-                    while (botY == y) {
-                        playfield += "| O ";
-                        botHere = true;
-                        botY--;
-                    }
-                    temp--;
-                }
-                while (!botHere) {
-                    playfield += "|   ";
-                    botHere = true;
-                }
-                x++;
-            }
-            playfield += "|\n" + seperator + "\n";
-            y++;
-        }
-        System.out.print(playfield);
+
     }
 
+    public static boolean movePlayer(char directionInput, long[] playfieldSize, long[] botPos) {
+        long[] relPos = new long[2];
+        switch (directionInput) {
+            case 'w':
+                relPos[1] = -1;
+                break;
+            case 'a':
+                relPos[0] = -1;
+                break;
+            case 's':
+                relPos[1] = 1;
+                break;
+            case 'd':
+                relPos[0] = 1;
+                break;
+        }
+        if (relPos[0] == 0 && relPos[1] == 0) {
+            return false;
+        }
+        for (int i = 0; i < relPos.length; i++) {
+            if (botPos[i] + relPos[i] < 0 || botPos[i] + relPos[i] >= playfieldSize[i]) {
+                return false;
+            }
+        }
+        botPos[0] += relPos[0];
+        botPos[1] += relPos[1];
+        return true;
+    }
+
+    public static String generatePlayfield(long[] size, long[] botPos) {
+        String seperator = "";
+        for (long i = 0; i < size[0]; i++) {
+            seperator += "|---";
+        }
+        seperator += '|';
+        String playfield;
+        playfield = seperator + "\n";
+        for (long y = 0; y < size[1]; y++) {
+            for (long x = 0; x < size[0]; x++) {
+                if (botPos[0] == x && botPos[1] == y) {
+                    playfield += "| O ";
+                } else {
+                    playfield += "|   ";
+                }
+            }
+            playfield += "| " + (y + 1) + "\n" + seperator + "\n";
+        }
+        playfield += ' ';
+        for (long x = 0; x < size[0]; x++) {
+            playfield += x;
+            for (long i =  4 - ("" + x).length(); i > 0; i--) {
+                playfield += ' ';
+            }
+        }
+        return playfield;
+    }
 }
