@@ -33,7 +33,7 @@ public class Playfield {
 
         // This adds the column numbers at the bottom
         for (long x = 0; x < this.size[0]; x++) {
-            playfield += x;
+            playfield += x + 1;
             for (long i =  4 - ("" + x).length(); i > 0; i--) {
                 playfield += ' ';
             }

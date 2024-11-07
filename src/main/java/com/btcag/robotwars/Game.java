@@ -8,11 +8,11 @@ public class Game {
         Random random = new Random();
         Scanner scanner = new Scanner(System.in);
 
-        Robot playerBot = new Robot(1, 1, getUsernameFromUser(scanner), 'O');
+        displaySplashScreen();
+        Robot playerBot = createRobotFromUserInput(scanner);
         Playfield playfield = new Playfield(15, 10);
-        Robot enemy = new Robot(playfield.getWidth() - 2, playfield.getHeight() - 2, "Enemy", 'X');
+        Robot enemy = new Robot(playfield.getWidth() - 2, playfield.getHeight() - 2, "Enemy", 'X', 3);
         Robot[] robots = {playerBot, enemy};
-
 
         char direction;
         int[] relPos;
@@ -21,26 +21,34 @@ public class Game {
         boolean gameWon = false;
 
         while (!gameWon) {
-            playfieldOutput = playfield.getPlayfield(robots);
-            System.out.println(playfieldOutput);
+            for (int move = 0; move < playerBot.getMovementRate(); move++) {
+                playfieldOutput = playfield.getPlayfield(robots);
+                System.out.println(playfieldOutput);
 
-            robotsOnField = getRobotsOnField(playerBot.getX(), playerBot.getY(), robots);
-            if (robotsOnField.length > 1) {
-                System.out.println("Robots on field X: " + playerBot.getX() + " Y: " + playerBot.getY() + " are fighting!");
-                System.out.println("Winner: " + getRandomBot(robotsOnField, random).getName());
-                gameWon = true;
-            }
+                robotsOnField = getRobotsOnField(playerBot.getX(), playerBot.getY(), robots);
+                if (robotsOnField.length > 1) {
+                    System.out.println("Robots on field X: " + (playerBot.getX() + 1) + " Y: " + (playerBot.getY() + 1) + " are fighting!");
+                    System.out.println("Winner: " + getRandomBot(robotsOnField, random).getName());
+                    gameWon = true;
+                }
 
-            if (!gameWon) {
-                do {
-                    System.out.println("\nWhere do you want to move to?\nw: ↑   a: ←   s: ↓   d: →");
-                    direction = (scanner.nextLine() + " ").charAt(0);
-                    relPos = getRelPos(direction);
-                } while (
-                        !"wasd".contains(direction + "") ||
-                        !isSpaceAvailable(relPos[0] + playerBot.getX(), relPos[1] + playerBot.getY(), playfield)
-                );
-                playerBot.moveRel(relPos[0], relPos[1]);
+                if (!gameWon) {
+                    do {
+                        System.out.println(
+                                "\nMove " + (move + 1) + " of " + playerBot.getMovementRate() + " allowed moves:\n" +
+                                "Where do you want to move to?\n" +
+                                "Q  W  E\n" +
+                                "A YOU D\n" +
+                                "Y  S  X"
+                        );
+                        direction = (scanner.nextLine().toLowerCase() + " ").charAt(0);
+                        relPos = getRelPos(direction);
+                    } while (
+                            !"qeyxwasd".contains(direction + "") ||
+                                    !isSpaceAvailable(relPos[0] + playerBot.getX(), relPos[1] + playerBot.getY(), playfield)
+                    );
+                    playerBot.moveRel(relPos[0], relPos[1]);
+                }
             }
         }
     }
@@ -82,6 +90,14 @@ public class Game {
 
     public static int[] getRelPos(char directionInput) {
         switch (directionInput) {
+            case 'q':
+                return new int[] {-1, -1};
+            case 'e':
+                return new int[] {1, -1};
+            case 'y':
+                return new int[] {-1, 1};
+            case 'x':
+                return new int[] {1, 1};
             case 'w':
                 return new int[] {0, -1};
             case 'a':
@@ -94,20 +110,31 @@ public class Game {
         return new int[] {0, 0};
     }
 
-    public static String getUsernameFromUser(Scanner scanner) {
+    public static void displaySplashScreen() {
+        System.out.println(
+                "  ____            _               _    __        __                     \n" +
+                " |  _ \\    ___   | |__     ___   | |_  \\ \\      / /   __ _   _ __   ___ \n" +
+                " | |_) |  / _ \\  | '_ \\   / _ \\  | __|  \\ \\ /\\ / /   / _` | | '__| / __|\n" +
+                " |  _ <  | (_) | | |_) | | (_) | | |_    \\ V  V /   | (_| | | |    \\__ \\\n" +
+                " |_| \\_\\  \\___/  |_.__/   \\___/   \\__|    \\_/\\_/     \\__,_| |_|    |___/\n"
+        );
+    }
+
+    public static Robot createRobotFromUserInput(Scanner scanner) {
         if (scanner instanceof Scanner) {
             scanner = new Scanner(System.in);
         }
 
-        System.out.print("  ____            _               _    __        __                     \n" +
-                " |  _ \\    ___   | |__     ___   | |_  \\ \\      / /   __ _   _ __   ___ \n" +
-                " | |_) |  / _ \\  | '_ \\   / _ \\  | __|  \\ \\ /\\ / /   / _` | | '__| / __|\n" +
-                " |  _ <  | (_) | | |_) | | (_) | | |_    \\ V  V /   | (_| | | |    \\__ \\\n" +
-                " |_| \\_\\  \\___/  |_.__/   \\___/   \\__|    \\_/\\_/     \\__,_| |_|    |___/\n\n" +
-                "Enter your username: ");
-        String username = scanner.nextLine();
-        System.out.println("Welcome, " + username + "!");
+        System.out.print("Enter your username: ");
+        String name = scanner.nextLine();
+        System.out.println("\nWelcome, " + name + "!");
 
-        return username;
+        System.out.print("\nWhat character should represent your robot? ");
+        char displayChar;
+        do {
+            displayChar = (scanner.nextLine() + "O").charAt(0);
+        } while (displayChar == ' ');
+
+        return new Robot(1, 1, name, displayChar, 3);
     }
 }
