@@ -2,37 +2,43 @@ package com.btcag.robotwars;
 
 import java.util.Random;
 import java.util.Scanner;
-
 public class Game {
     public static void main(String[] args) {
-        Random random = new Random();
         Scanner scanner = new Scanner(System.in);
-
         displaySplashScreen();
         Robot playerBot = createRobotFromUserInput(scanner);
         Playfield playfield = new Playfield(15, 10);
-        Robot enemy = new Robot(playfield.getWidth() - 2, playfield.getHeight() - 2, "Enemy", 'X', 3);
+        Robot enemy = new Robot(playfield.getWidth() - 2, playfield.getHeight() - 2, "Enemy", 'X', 3, 1, 1, 7);
         Robot[] robots = {playerBot, enemy};
 
         char direction;
         int[] relPos;
         String playfieldOutput;
-        Robot[] robotsOnField;
+        Robot[] robotsInRange;
         boolean gameWon = false;
 
         while (!gameWon) {
-            for (int move = 0; move < playerBot.getMovementRate(); move++) {
-                playfieldOutput = playfield.getPlayfield(robots);
-                System.out.println(playfieldOutput);
+            robotsInRange = getRobotsNearField(playerBot.getX(), playerBot.getY(), playerBot.getAttackRange(), robots);
+            if (robotsInRange.length > 1) {
+                for (Robot robot: robotsInRange) {
+                    if (robot != playerBot && !robot.isKnockedOut()) {
+                        attackRobot(playerBot, robot);
+                        if (robot.isKnockedOut()) {
+                            System.out.println("You knocked out " + robot.getName());
+                            gameWon = checkGameWon(playerBot, robots);
 
-                robotsOnField = getRobotsOnField(playerBot.getX(), playerBot.getY(), robots);
-                if (robotsOnField.length > 1) {
-                    System.out.println("Robots on field X: " + (playerBot.getX() + 1) + " Y: " + (playerBot.getY() + 1) + " are fighting!");
-                    System.out.println("Winner: " + getRandomBot(robotsOnField, random).getName());
-                    gameWon = true;
+                        } else {
+                            System.out.println("You attacked " + robot.getName() + ", he is down to " + robot.getHealth() + " hp.");
+                        }
+                    }
                 }
+            }
 
+            for (int move = 0; move < playerBot.getMovementRate(); move++) {
                 if (!gameWon) {
+                    playfieldOutput = playfield.getPlayfield(robots);
+                    System.out.println(playfieldOutput);
+
                     do {
                         System.out.println(
                                 "\nMove " + (move + 1) + " of " + playerBot.getMovementRate() + " allowed moves:\n" +
@@ -48,29 +54,46 @@ public class Game {
                                     !isSpaceAvailable(relPos[0] + playerBot.getX(), relPos[1] + playerBot.getY(), playfield)
                     );
                     playerBot.moveRel(relPos[0], relPos[1]);
+                    System.out.println();
                 }
             }
         }
     }
 
-    public static Robot getRandomBot(Robot[] robots, Random random) {
-        if (!(random instanceof Random)) {
-            random = new Random();
+    public static boolean checkGameWon(Robot potentialWinner, Robot[] robots) {
+        int knockedOutRobotNum = 0;
+        for (Robot enemyRobot: robots) {
+            if (enemyRobot != potentialWinner && enemyRobot.isKnockedOut()) {
+                knockedOutRobotNum++;
+            }
         }
-        return robots[random.nextInt(0, robots.length)];
+
+        return knockedOutRobotNum == (robots.length - 1);
     }
 
-    public static Robot[] getRobotsOnField(int x, int y, Robot[] robots) {
+    public static void attackRobot(Robot attacker, Robot victim) {
+        if (attacker instanceof Robot && victim instanceof Robot) {
+            victim.takeDamage(attacker.getAttackDamage());
+        }
+    }
+
+    public static Robot[] getRobotsNearField(int x, int y, int tolerance, Robot[] robots) {
         int numRobots = 0;
         for (Robot robot: robots) {
-            if (robot.getX() == x && robot.getY() == y) {
+            if (
+                    Math.abs(robot.getX() - x) <= tolerance &&
+                    Math.abs(robot.getY() - y) <= tolerance
+            ) {
                 numRobots++;
             }
         }
 
         Robot[] robotsOnField = new Robot[numRobots];
         for (Robot robot: robots) {
-            if (robot.getX() == x && robot.getY() == y) {
+            if (
+                    Math.abs(robot.getX() - x) <= tolerance &&
+                    Math.abs(robot.getY() - y) <= tolerance
+            ) {
                 robotsOnField[robotsOnField.length - numRobots] = robot;
                 numRobots--;
             }
@@ -121,20 +144,20 @@ public class Game {
     }
 
     public static Robot createRobotFromUserInput(Scanner scanner) {
-        if (scanner instanceof Scanner) {
+        if (!(scanner instanceof Scanner)) {
             scanner = new Scanner(System.in);
         }
 
         System.out.print("Enter your username: ");
         String name = scanner.nextLine();
-        System.out.println("\nWelcome, " + name + "!");
+        System.out.println("\nWelcome, " + name + '!');
 
         System.out.print("\nWhat character should represent your robot? ");
         char displayChar;
         do {
-            displayChar = (scanner.nextLine() + "O").charAt(0);
+            displayChar = (scanner.nextLine() + 'O').charAt(0);
         } while (displayChar == ' ');
 
-        return new Robot(1, 1, name, displayChar, 3);
+        return new Robot(1, 1, name, displayChar, 3, 3, 2, 5);
     }
 }

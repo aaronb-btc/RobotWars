@@ -1,23 +1,25 @@
 package com.btcag.robotwars;
 
 public class Playfield {
-    private int[] size;
+    private int width;
+    private int height;
 
     public Playfield(int width, int height) {
-        this.size = new int[] {width, height};
+        this.width = width;
+        this.height = height;
     }
 
     String getPlayfield(Robot[] robots) {
         String seperator = "";
-        for (long i = 0; i < this.size[0]; i++) {
+        for (long i = 0; i < this.width; i++) {
             seperator += "|---";
         }
         seperator += '|';
         String playfield;
         playfield = seperator + "\n";
         char myChar;
-        for (long y = 0; y < this.size[1]; y++) {
-            for (long x = 0; x < this.size[0]; x++) {
+        for (long y = 0; y < this.height; y++) {
+            for (long x = 0; x < this.width; x++) {
                 myChar = ' ';
                 for (Robot robot: robots) {
                     if (robot.getX() == x && robot.getY() == y) {
@@ -32,7 +34,7 @@ public class Playfield {
         playfield += ' ';
 
         // This adds the column numbers at the bottom
-        for (long x = 0; x < this.size[0]; x++) {
+        for (long x = 0; x < this.width; x++) {
             playfield += x + 1;
             for (long i =  4 - ("" + x).length(); i > 0; i--) {
                 playfield += ' ';
@@ -42,10 +44,10 @@ public class Playfield {
     }
 
     int getWidth() {
-        return this.size[0];
+        return this.width;
     }
 
     int getHeight() {
-        return this.size[1];
+        return this.height;
     }
 }
