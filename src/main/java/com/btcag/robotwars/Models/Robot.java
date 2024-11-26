@@ -55,7 +55,7 @@ public  class Robot {
         return this.attackDamage;
     }
 
-    public getHealth() {
+    public int getHealth() {
         return this.health;
     }
 
@@ -67,11 +67,11 @@ public  class Robot {
         return this.y;
     }
 
-    public getMovementRate() {
+    public int getMovementRate() {
         return this.movementRate;
     }
 
-    public moveRel(int xSteps, int ySteps) {
+    public void moveRel(int xSteps, int ySteps) {
         this.x += xSteps;
         this.y += ySteps;
     }
@@ -80,7 +80,7 @@ public  class Robot {
         return this.displayChar;
     }
 
-    public getName() {
+    public String getName() {
         return this.name;
     }
 }

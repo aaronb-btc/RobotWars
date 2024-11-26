@@ -10,8 +10,7 @@ public class BattlefieldView {
             seperator += "|---";
         }
         seperator += '|';
-        String playfield;
-        playfield = seperator + "\n";
+        System.out.println(seperator);
         char myChar;
         for (long y = 0; y < battlefield.getHeight(); y++) {
             for (long x = 0; x < battlefield.getWidth(); x++) {
@@ -22,23 +21,20 @@ public class BattlefieldView {
                         break;
                     }
                 }
-                playfield += "| " + myChar + ' ';
+                System.out.print("| " + myChar + ' ');
             }
-            playfield += "| " + (y + 1) + "\n" + seperator + "\n";
+            System.out.println("| " + (y + 1) + "\n" + seperator);
         }
-        playfield += ' ';
+        System.out.print(' ');
 
         // This adds the column numbers at the bottom
         for (long x = 0; x < battlefield.getWidth(); x++) {
-            playfield += x + 1;
+            System.out.print(x + 1);
             for (long i =  4 - ("" + x).length(); i > 0; i--) {
-                playfield += ' ';
+                System.out.print(' ');
             }
         }
-        return playfield;
+        System.out.println();
     }
+}
 
-    private long getWidth() {
-    }
-}
-}
