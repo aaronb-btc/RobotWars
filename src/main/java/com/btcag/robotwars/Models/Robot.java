@@ -1,4 +1,4 @@
-package com.btcag.robotwars;
+package com.btcag.robotwars.Models;
 
 public  class Robot {
     private int x;
@@ -21,7 +21,7 @@ public  class Robot {
         this.health = health;
     }
 
-    void takeDamage(int healthPoints) {
+    public void takeDamage(int healthPoints) {
         this.health -= healthPoints;
         if (this.health < 0) {
             this.health = 0;
@@ -43,44 +43,44 @@ public  class Robot {
                 '}';
     }
 
-    boolean isKnockedOut() {
+    public boolean isKnockedOut() {
         return this.health == 0;
     }
 
-    int getAttackRange() {
+    public int getAttackRange() {
         return this.attackRange;
     }
 
-    int getAttackDamage() {
+    public int getAttackDamage() {
         return this.attackDamage;
     }
 
-    int getHealth() {
+    public int getHealth() {
         return this.health;
     }
 
-    int getX() {
+    public int getX() {
         return this.x;
     }
 
-    int getY() {
+    public int getY() {
         return this.y;
     }
 
-    int getMovementRate() {
+    public int getMovementRate() {
         return this.movementRate;
     }
 
-    void moveRel(int xSteps, int ySteps) {
+    public void moveRel(int xSteps, int ySteps) {
         this.x += xSteps;
         this.y += ySteps;
     }
 
-    char getDisplayChar() {
+    public char getDisplayChar() {
         return this.displayChar;
     }
 
-    String getName() {
+    public String getName() {
         return this.name;
     }
 }
