@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class AskSkillPointView {
     public static int display(String skillName, int remainingSkillPoints) {
         int amountPoints = 0;
-        if (remainingSkillPoints > 1) {
+        if (remainingSkillPoints > 0) {
             Scanner scanner = new Scanner(System.in);
 
             System.out.println(

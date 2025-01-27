@@ -1,86 +1,140 @@
 package com.btcag.robotwars.Models;
 
-public  class Robot {
+import com.btcag.robotwars.Api.model.Align;
+import com.btcag.robotwars.Enums.Direction;
+import com.btcag.robotwars.Enums.ItemType;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+public class Robot {
     private int x;
     private int y;
-    private String name;
-    private char displayChar;
-    private int movementRate;
-    private int attackRange;
-    private int attackDamage;
-    private int health;
+    private final com.btcag.robotwars.Api.model.Robot robot;
+    private Align alignment = Align.N;
+    private Item[] items = new Item[ItemType.values().length];
 
-    public Robot(int x, int y, String name, char displayChar, int movementRate, int attackRange, int attackDamage, int health) {
+    public Robot(
+            int x,
+            int y,
+            String id,
+            String name,
+            int health,
+            int attackDamage,
+            int attackRange,
+            int movementRate
+    ) {
         this.x = x;
         this.y = y;
-        this.name = name;
-        this.displayChar = displayChar;
-        this.movementRate = movementRate;
-        this.attackRange = attackRange;
-        this.attackDamage = attackDamage;
-        this.health = health;
+        this.robot = new com.btcag.robotwars.Api.model.Robot();
+        robot.setId(id);
+        robot.setName(name);
+        robot.setHealth(new BigDecimal(health));
+        robot.setAttackDamage(new BigDecimal(attackDamage));
+        robot.setAttackRange(new BigDecimal(attackRange));
+        robot.setMovementRate(new BigDecimal(movementRate));
+    }
+
+    public Robot(
+            int x,
+            int y,
+            com.btcag.robotwars.Api.model.Robot robot
+    ) {
+        this.x = x;
+        this.y = y;
+        this.robot = robot;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public String getId() {
+        return robot.getId();
+    }
+
+    public String getName() {
+        return robot.getName();
+    }
+
+    public int getHealth() {
+        return robot.getHealth().intValue();
+    }
+
+    public int getAttackDamage() {
+        return robot.getAttackDamage().intValue()
+                + (getItem(ItemType.ATTACK_DAMAGE) == null
+                ? 0
+                : getItem(ItemType.ATTACK_DAMAGE).getIntensity());
+    }
+
+    public int getAttackRange() {
+        return robot.getAttackRange().intValue()
+                + (getItem(ItemType.ATTACK_RANGE) == null
+                ? 0
+                : getItem(ItemType.ATTACK_RANGE).getIntensity());
+    }
+
+    public int getMovementRate() {
+        return robot.getMovementRate().intValue()
+                + (getItem(ItemType.MOVEMENT_RATE) == null
+                ? 0
+                : getItem(ItemType.MOVEMENT_RATE).getIntensity());
+    }
+
+    public Align getAlignment() {
+        return alignment;
+    }
+
+    public Item getItem(ItemType itemType) {
+        return items[itemType.ordinal()];
+    }
+
+    public void setAlignment(Align alignment) {
+        this.alignment = alignment;
+    }
+
+    public void setItem(Item item) {
+        items[item.getItemType().ordinal()] = item;
+    }
+
+    public void decreaseItemDuration(ItemType itemType) {
+        this.items[itemType.ordinal()].decreaseDuration();
+    }
+
+    public void deleteItem(ItemType itemType) {
+        items[itemType.ordinal()] = null;
     }
 
     public void takeDamage(int healthPoints) {
-        this.health -= healthPoints;
-        if (this.health < 0) {
-            this.health = 0;
-
+        robot.setHealth(robot.getHealth().subtract(new BigDecimal(healthPoints)));
+        if (getHealth() < 0) {
+            robot.setHealth(BigDecimal.ZERO);
         }
+    }
+
+    public boolean isKnockedOut() {
+        return getHealth() == 0;
     }
 
     @Override
     public String toString() {
         return "Robot{" +
-                "x=" + x +
-                ", y=" + y +
-                ", name='" + name + '\'' +
-                ", displayChar=" + displayChar +
-                ", movementRate=" + movementRate +
-                ", attackRange=" + attackRange +
-                ", attackDamage=" + attackDamage +
-                ", health=" + health +
+                "\n\tx=" + x +
+                ",\n\ty=" + y +
+                ",\n\trobot=\n" + robot +
+                ",\n\talignment=" + alignment +
+                ",\n\titems=" + Arrays.toString(items) +
                 '}';
     }
 
-    public boolean isKnockedOut() {
-        return this.health == 0;
-    }
-
-    public int getAttackRange() {
-        return this.attackRange;
-    }
-
-    public int getAttackDamage() {
-        return this.attackDamage;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getX() {
-        return this.x;
-    }
-
-    public int getY() {
-        return this.y;
-    }
-
-    public int getMovementRate() {
-        return this.movementRate;
-    }
-
-    public void moveRel(int xSteps, int ySteps) {
-        this.x += xSteps;
-        this.y += ySteps;
-    }
-
-    public char getDisplayChar() {
-        return this.displayChar;
-    }
-
-    public String getName() {
-        return this.name;
+    public void move(Direction direction, int steps) {
+        this.alignment = Align.values()[direction.ordinal()];
+        this.x += direction.x * steps;
+        this.y += direction.y * steps;
     }
 }
