@@ -132,9 +132,12 @@ public class Robot {
                 '}';
     }
 
-    public void move(Direction direction, int steps) {
-        this.alignment = Align.values()[direction.ordinal()];
-        this.x += direction.x * steps;
-        this.y += direction.y * steps;
+    public void move(int x, int y) {
+        this.x += x;
+        this.y += y;
+    }
+
+    public void align(Align alignment) {
+        this.alignment = alignment;
     }
 }

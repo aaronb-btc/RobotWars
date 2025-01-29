@@ -1,7 +1,7 @@
 package com.btcag.robotwars.Controllers;
 
+import com.btcag.robotwars.Api.model.NewRobot;
 import com.btcag.robotwars.Models.Map;
-import com.btcag.robotwars.Models.Robot;
 import com.btcag.robotwars.Services.APIFunctions;
 import com.btcag.robotwars.Services.Menu;
 import com.btcag.robotwars.Api.ApiException;
@@ -29,7 +29,7 @@ public class TestAPI {
                     System.out.println(APIFunctions.getRobot(id));
                 }
                 case 2 -> {
-                    Robot robot = GameController.createPlayerRobot(15);
+                    NewRobot robot = GameController.createPlayerRobot(15);
                     System.out.println(APIFunctions.createRobot(robot).getId());
                 }
                 case 3 -> {

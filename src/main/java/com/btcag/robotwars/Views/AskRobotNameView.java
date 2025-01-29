@@ -8,7 +8,6 @@ public class AskRobotNameView {
 
         System.out.println("Name your robot:");
         String name = scanner.nextLine();
-        System.out.println("\nWelcome, " + name + '!');
 
         return name;
     }

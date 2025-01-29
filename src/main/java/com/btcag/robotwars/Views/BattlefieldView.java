@@ -1,6 +1,5 @@
 package com.btcag.robotwars.Views;
 
-import com.btcag.robotwars.Enums.MapItemType;
 import com.btcag.robotwars.Models.*;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class BattlefieldView {
         for (int i = 0; i < charMap.length; i++) {
             if (i % mapWidth == 0 && i != 0) {
                 System.out.print("│ ");
-                System.out.println(i / charMap.length);
+                System.out.println(i / mapWidth);
                 System.out.print('├');
                 System.out.print("┼───".repeat(mapWidth).substring(1, mapWidth * 4));
                 System.out.println('┤');
@@ -77,11 +76,8 @@ public class BattlefieldView {
         System.out.print('└');
         System.out.print("───┴".repeat(mapWidth).substring(0, mapWidth * 4 - 1));
         System.out.println('┘');
-
-        int i;
         int spacing;
-        for (int j = 1; j <= mapWidth; j++) {
-            i = j + 5;
+        for (int i = 1; i <= mapWidth; i++) {
             spacing = 4 - (int) (Math.log10(i) + 1);
             if (spacing < 0) spacing = 0;
             else System.out.print(" ".repeat((int) Math.ceil((double) spacing / 2)));
